@@ -7,43 +7,47 @@
 <h1>Create</h1>
 
 <h4>PostModel</h4>
-<hr />
+<hr/>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <td>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Text</span>
+                        </div>
+                        <textarea asp-for="Text" class="form-control" aria-label="Text"></textarea>
+                    </div>
+                </td>
             </div>
-            <div class="form-group">
-                <label asp-for="Text" class="control-label"></label>
-                <input asp-for="Text" class="form-control" />
-                <span asp-validation-for="Text" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AuthorId" class="control-label"></label>
-                <input asp-for="AuthorId" class="form-control" />
-                <span asp-validation-for="AuthorId" class="text-danger"></span>
-            </div>
+            <input asp-for="AuthorId" class="form-control" hidden/>
             <div class="form-group">
                 <label asp-for="ThreadId" class="control-label"></label>
-                <select asp-for="ThreadId" class ="form-control" asp-items="ViewBag.ThreadId"></select>
+                <select asp-for="ThreadId" class="form-control" asp-items="ViewBag.ThreadId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="AttachmentsPaths" class="control-label"></label>
-                <input asp-for="AttachmentsPaths" class="form-control" />
+                <input asp-for="AttachmentsPaths" class="form-control"/>
                 <span asp-validation-for="AttachmentsPaths" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary"/>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+@if (@ViewBag.Id == null)
+{
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+}
+else
+{
+    <div>
+        <a asp-controller="Post" asp-action="Browse" asp-route-id="@ViewBag.Id">Back to Posts</a>
+    </div>
+}

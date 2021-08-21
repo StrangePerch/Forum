@@ -10,33 +10,34 @@
     Return to Categories
 </a>
 
-@if (Model.Any())
-{
-    <table class="table">
-        <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AuthorId)
-            </th>
-            <th>
-                Threads
-            </th>
-            <th>
-                Posts
-            </th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AuthorId)
+        </th>
+        <th>
+            Threads
+        </th>
+        <th>
+            Posts
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+
+    @if (Model.Any())
+    {
         @foreach (var item in Model)
         {
             <tr>
                 <td>
                     <a class="nav-link text-dark"
-                       asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@item.Id">
+                       asp-area="" asp-controller="Post" asp-action="Browse" asp-route-id="@item.Id">
                         @Html.DisplayFor(modelItem => item.Name)
                     </a>
                 </td>
@@ -48,19 +49,14 @@
                 </td>
             </tr>
         }
-        </tbody>
-    </table>
-    
+    }
+    else
+    {
+        <h1>Wow, such empty</h1>
+    }
     <a class="badge badge-info"
        asp-area="" asp-controller="Thread" asp-action="Create" asp-route-id="@ViewBag.Parent.Id">
         Create
     </a>
-}
-else
-{
-    <h1>Wow, such empty</h1>
-    <a class="badge badge-info"
-       asp-area="" asp-controller="Thread" asp-action="Create" asp-route-id="@ViewBag.Parent.Id">
-        Click to create the first thread
-    </a>
-}
+    </tbody>
+</table>

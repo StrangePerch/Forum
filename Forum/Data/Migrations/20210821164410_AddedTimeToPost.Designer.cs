@@ -3,14 +3,16 @@ using System;
 using Forum.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Forum.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210821164410_AddedTimeToPost")]
+    partial class AddedTimeToPost
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,20 +55,16 @@ namespace Forum.Data.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("QuoteId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Text")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ThreadId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("QuoteId");
 
                     b.HasIndex("ThreadId");
 
@@ -89,8 +87,6 @@ namespace Forum.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
 
                     b.HasIndex("ParentId");
 
@@ -304,40 +300,22 @@ namespace Forum.Data.Migrations
 
             modelBuilder.Entity("Forum.Models.PostModel", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId");
-
-                    b.HasOne("Forum.Models.PostModel", "Quote")
-                        .WithMany()
-                        .HasForeignKey("QuoteId");
-
                     b.HasOne("Forum.Models.ThreadModel", "Thread")
                         .WithMany("Posts")
                         .HasForeignKey("ThreadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Author");
-
-                    b.Navigation("Quote");
-
                     b.Navigation("Thread");
                 });
 
             modelBuilder.Entity("Forum.Models.ThreadModel", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId");
-
                     b.HasOne("Forum.Models.CategoryModel", "Parent")
                         .WithMany()
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Author");
 
                     b.Navigation("Parent");
                 });

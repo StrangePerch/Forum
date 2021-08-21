@@ -234,3 +234,4 @@ C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Areas\Id
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Areas\Identity\Pages\Account\_ViewImports.cshtml.g.cs
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Areas\Identity\Pages\_ValidationScriptsPartial.cshtml.g.cs
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Areas\Identity\Pages\_ViewImports.cshtml.g.cs
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Post\Browse.cshtml.g.cs

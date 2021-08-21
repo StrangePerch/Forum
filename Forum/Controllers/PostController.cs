@@ -1,24 +1,47 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Forum.Data;
 using Forum.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Forum.Controllers
 {
     public class PostController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private UserManager<IdentityUser> UserManager { get; set; }
+        private IdentityUser User { get; set; }
 
-        public PostController(ApplicationDbContext context)
+        public PostController(ApplicationDbContext context, 
+            UserManager<IdentityUser> manager,
+            IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            UserManager = manager;
+            
+            var task = UserManager.FindByIdAsync(httpContextAccessor.HttpContext.User
+                .FindFirst(ClaimTypes.NameIdentifier).Value);
+            Task.WaitAll(task);
+            User = task.Result;
         }
 
+        public async Task<IActionResult> Browse(int? id)
+        {
+            var applicationDbContext = 
+                _context.Posts.Include(c => c.Thread)
+                    .Where(p => p.ThreadId == id);
+            ViewBag.Parent = await _context.Threads.FindAsync(id);
+            ViewBag.UserManager = UserManager;
+            return View(await applicationDbContext.ToListAsync());
+        }
+        
         // GET: Post
         public async Task<IActionResult> Index()
         {
@@ -46,9 +69,11 @@ namespace Forum.Controllers
         }
 
         // GET: Post/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
             ViewData["ThreadId"] = new SelectList(_context.Threads, "Id", "Id");
+            ViewBag.User = User;
+            ViewBag.Id = id;
             return View();
         }
 
@@ -59,11 +84,14 @@ namespace Forum.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Text,AuthorId,ThreadId,AttachmentsPaths")] PostModel postModel)
         {
+            postModel.AuthorId = User.Id;
+            postModel.Created = DateTime.Now;
+            
             if (ModelState.IsValid)
             {
                 _context.Add(postModel);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Browse", new { id = postModel.ThreadId });
             }
             ViewData["ThreadId"] = new SelectList(_context.Threads, "Id", "Id", postModel.ThreadId);
             return View(postModel);

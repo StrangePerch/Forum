@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "C+PD6+EsyYMxvO0nFJ378BIRuWInN6bDXk6+ctchtlL/Pi5qp1Mbd76keOkYRMCJdZrtpsZeAFje7RgPYCYI7w==",
+  "dgSpecHash": "NzyfetPD1VQwl8MWB3d9W2kZN3yzxBngd9sYsxqLPB9nUif4VnePD2MWr4GRV0vz5mi/gsSyI9A8teBqRt+v5A==",
   "success": true,
   "projectFilePath": "C:\\Users\\Admin\\RiderProjects\\ASP.NET\\Forum\\Forum\\Forum.csproj",
   "expectedPackageFiles": [
@@ -145,7 +145,8 @@
     "C:\\Users\\Admin\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\system.xml.xmldocument\\4.3.0\\system.xml.xmldocument.4.3.0.nupkg.sha512",
-    "C:\\Users\\Admin\\.nuget\\packages\\system.xml.xmlserializer\\4.3.0\\system.xml.xmlserializer.4.3.0.nupkg.sha512"
+    "C:\\Users\\Admin\\.nuget\\packages\\system.xml.xmlserializer\\4.3.0\\system.xml.xmlserializer.4.3.0.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\5.0.5\\microsoft.netcore.app.host.win-x64.5.0.5.nupkg.sha512"
   ],
   "logs": []
 }
