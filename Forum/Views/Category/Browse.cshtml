@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Forum.Models.CategoryModel>
+
+@{
+    ViewData["Title"] = "Browse";
+    var parent = Model.First().Parent;
+    int? parentId = null;       
+    if (parent != null)
+        parentId = parent.ParentId;
+}
+<!DOCTYPE html>
+@if (parent != null)
+{
+    <a class="badge badge-primary"
+       asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@parentId">
+        Return
+    </a>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                Last post
+            </th>
+            <th>
+                Threads
+            </th>
+            <th>
+                Posts
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <a class="nav-link text-dark"
+                   asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@item.Id">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </a>
+            </td>
+            <td>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
