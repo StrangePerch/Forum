@@ -2,12 +2,11 @@
 
 @{
     ViewData["Title"] = "Browse";
-    var parentId = Model.First().ParentId;
 }
 <!DOCTYPE html>
 
 <a class="badge badge-primary"
-   asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@parentId">
+   asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@ViewBag.ParentId">
     Return to Categories
 </a>
 

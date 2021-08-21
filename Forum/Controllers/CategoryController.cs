@@ -26,7 +26,7 @@ namespace Forum.Controllers
                 _context.Categories.Include(c => c.Parent)
                     .Where(c => c.ParentId == id);
             if (!applicationDbContext.Any())
-                RedirectToAction();
+                return RedirectToAction("Browse", "Thread", new { id });
             return View(await applicationDbContext.ToListAsync());
         }
 

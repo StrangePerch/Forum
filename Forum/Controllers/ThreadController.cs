@@ -24,6 +24,8 @@ namespace Forum.Controllers
             var applicationDbContext = 
                 _context.Threads.Include(c => c.Parent)
                     .Where(c => c.ParentId == id);
+            var parentCategory = await _context.Categories.FindAsync(id);
+            ViewBag.ParentId = parentCategory.ParentId;
             return View(await applicationDbContext.ToListAsync());
         }
         
