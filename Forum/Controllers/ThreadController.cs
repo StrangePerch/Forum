@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Forum.Data;
 using Forum.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Forum.Controllers
 {
@@ -14,18 +17,36 @@ namespace Forum.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public ThreadController(ApplicationDbContext context)
+        private UserManager<IdentityUser> UserManager { get; set; }
+        private IdentityUser User { get; set; }
+
+        public ThreadController(ApplicationDbContext context, 
+            UserManager<IdentityUser> manager,
+            IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
-        }  
+            UserManager = manager;
+            
+            var task = UserManager.FindByIdAsync(httpContextAccessor.HttpContext.User
+                .FindFirst(ClaimTypes.NameIdentifier).Value);
+            Task.WaitAll(task);
+            User = task.Result;
+        }
+
+        public SelectList GetSelectList(int? selected)
+        {
+            var parentsIds = _context.Categories.Select(c => c.ParentId);
+            var select = _context.Categories.Where(c => !parentsIds.Contains(c.Id));
+            return new SelectList(select, "Id", "Name", selected);
+        }
 
         public async Task<IActionResult> Browse(int? id)
         {
             var applicationDbContext = 
                 _context.Threads.Include(c => c.Parent)
                     .Where(c => c.ParentId == id);
-            var parentCategory = await _context.Categories.FindAsync(id);
-            ViewBag.ParentId = parentCategory.ParentId;
+            ViewBag.Parent = await _context.Categories.FindAsync(id);
+            ViewBag.UserManager = UserManager;
             return View(await applicationDbContext.ToListAsync());
         }
         
@@ -56,9 +77,11 @@ namespace Forum.Controllers
         }
 
         // GET: Thread/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
-            ViewData["ParentId"] = new SelectList(_context.Categories, "Id", "Id");
+            ViewData["ParentId"] = GetSelectList(id);
+            ViewBag.User = User;
+            ViewBag.Id = id;
             return View();
         }
 
@@ -92,7 +115,7 @@ namespace Forum.Controllers
             {
                 return NotFound();
             }
-            ViewData["ParentId"] = new SelectList(_context.Categories, "Id", "Id", threadModel.ParentId);
+            ViewData["ParentId"] = GetSelectList(threadModel.ParentId);
             return View(threadModel);
         }
 

@@ -6,19 +6,20 @@
 <!DOCTYPE html>
 
 <a class="badge badge-primary"
-   asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@ViewBag.ParentId">
+   asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@ViewBag.Parent.ParentId">
     Return to Categories
 </a>
 
-
-<table class="table">
-    <thead>
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                Last post
+                @Html.DisplayNameFor(model => model.AuthorId)
             </th>
             <th>
                 Threads
@@ -28,19 +29,38 @@
             </th>
             <th></th>
         </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a class="nav-link text-dark"
-                   asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@item.Id">
-                    @Html.DisplayFor(modelItem => item.Name)
-                </a>
-            </td>
-            <td>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a class="nav-link text-dark"
+                       asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </a>
+                </td>
+                <td>
+                    <a class="nav-link text-dark"
+                       asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.AuthorId)
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    
+    <a class="badge badge-info"
+       asp-area="" asp-controller="Thread" asp-action="Create" asp-route-id="@ViewBag.Parent.Id">
+        Create
+    </a>
+}
+else
+{
+    <h1>Wow, such empty</h1>
+    <a class="badge badge-info"
+       asp-area="" asp-controller="Thread" asp-action="Create" asp-route-id="@ViewBag.Parent.Id">
+        Click to create the first thread
+    </a>
+}

@@ -9,7 +9,7 @@ namespace Forum.Models
         public string Title { get; set; }
         public string Text { get; set; }
         
-        public int AuthorId { get; set; }
+        public string AuthorId { get; set; }
         
         public int ThreadId { get; set; }
         public ThreadModel Thread { get; set; }
