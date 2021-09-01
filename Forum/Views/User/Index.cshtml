@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Forum.Models.ViewModels.UserViewModel>
+
+@{
+    Layout = "Admin/_AdminLayout";
+}
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Email</th>
+        <th scope="col">UserName</th>
+        <th scope="col">Roles</th>
+        <th scope="col">Location</th>
+        <th scope="col">Joined at</th>
+        <th scope="col">Posts</th>
+        <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <th scope="row">@user.Email</th>
+            <td>@user.UserName</td>
+            <td>
+                @foreach (var role in user.Roles)
+                {
+                    <span>@role </span>
+                }
+            </td>
+            <td>@user.Location</td>
+            <td>@user.JoinedAt</td>
+            <td>@user.Posts</td>
+            <td>
+                <a  class="badge bg-warning" asp-action="Edit" asp-route-id="@user.Id">Edit</a> |
+                <a class="badge bg-primary" asp-action="Details" asp-route-id="@user.Id">Details</a>
+                @* <a asp-action="Delete" asp-route-id="@user.Id">Delete</a> *@
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+    document.querySelector("#UsersLink").className += " active";
+    document.querySelector("#Databases").className += " menu-open";
+    </script>
+}

@@ -191,8 +191,6 @@ C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Po
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Post\Edit.cshtml.g.cs
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Post\Index.cshtml.g.cs
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Thread\Create.cshtml.g.cs
-C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Thread\Delete.cshtml.g.cs
-C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Thread\Details.cshtml.g.cs
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Thread\Edit.cshtml.g.cs
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Thread\Index.cshtml.g.cs
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Thread\Browse.cshtml.g.cs
@@ -235,3 +233,15 @@ C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Areas\Id
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Areas\Identity\Pages\_ValidationScriptsPartial.cshtml.g.cs
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Areas\Identity\Pages\_ViewImports.cshtml.g.cs
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Post\Browse.cshtml.g.cs
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\bin\Debug\net5.0\package-lock.json
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\bin\Debug\net5.0\package.json
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Areas\Identity\Pages\Error.cshtml.g.cs
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Admin\Index.cshtml.g.cs
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Shared\Admin\_AdminLayout.cshtml.g.cs
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Shared\Admin\_ControlSidebar.cshtml.g.cs
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Shared\Admin\_Footer.cshtml.g.cs
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Shared\Admin\_Navbar.cshtml.g.cs
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Shared\Admin\_Sidebar.cshtml.g.cs
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\User\Index.cshtml.g.cs
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\User\Details.cshtml.g.cs
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\User\Edit.cshtml.g.cs

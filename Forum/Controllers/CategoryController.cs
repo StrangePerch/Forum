@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Forum.Data;
 using Forum.Models;
-using Microsoft.AspNetCore.Identity;
+using Forum.Models.ViewModels;
 
 namespace Forum.Controllers
 {
@@ -27,14 +27,86 @@ namespace Forum.Controllers
                     .Where(c => c.ParentId == id);
             if (!applicationDbContext.Any())
                 return RedirectToAction("Browse", "Thread", new { id });
-            return View(await applicationDbContext.ToListAsync());
+
+            var categoryViewModels = new List<CategoryViewModel>();
+            foreach (var category in applicationDbContext)
+            {
+                var threadCount = 0;
+                var postsCount = 0;
+                var lastActive = new DateTime();
+                foreach (var thread in _context.Threads
+                    .Include(t => t.Parent.Parent)
+                    .Include(t => t.Posts))
+                {
+                    if (IsThreadChild(thread, category))
+                    {
+                        threadCount++;
+                        if (thread.Posts != null)
+                        {
+                            postsCount += thread.Posts.Count;
+                            var last = thread.Posts.Max(p => p.Created);
+                            if (last > lastActive) lastActive = last;
+                        }
+                    }
+                }
+                
+                categoryViewModels.Add(new CategoryViewModel()
+                    .FromModel(category, postsCount, threadCount, 
+                        await _context.Posts.FirstOrDefaultAsync(c => c.Created == lastActive)));
+            }
+            
+            return View(categoryViewModels);
+        }
+
+        public bool IsThreadChild(ThreadModel thread, CategoryModel category)
+        {
+            return IsCategoryChild(thread.Parent, category);
+        }
+
+        public bool IsCategoryChild(CategoryModel childCategory, CategoryModel parentCategory)
+        {
+            while (true)
+            {
+                if (childCategory == parentCategory) return true;
+                if (childCategory == null) return false;
+                childCategory = childCategory.Parent;
+            }
         }
 
         // GET: Category
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Categories.Include(c => c.Parent);
-            return View(await applicationDbContext.ToListAsync());
+            var applicationDbContext =
+                _context.Categories.Include(c => c.Parent);
+
+            var categoryViewModels = new List<CategoryViewModel>();
+            foreach (var category in applicationDbContext)
+            {
+                var threadCount = 0;
+                var postsCount = 0;
+                var lastActive = new DateTime();
+                foreach (var thread in _context.Threads
+                    .Include(t => t.Parent.Parent)
+                    .Include(t => t.Posts))
+                {
+                    if (IsThreadChild(thread, category))
+                    {
+                        threadCount++;
+                        if (thread.Posts != null)
+                        {
+                            postsCount += thread.Posts.Count;
+                            var last = thread.Posts.Max(p => p.Created);
+                            if (last > lastActive) lastActive = last;
+                        }
+                    }
+                }
+                
+                categoryViewModels.Add(new CategoryViewModel()
+                    .FromModel(category, postsCount, threadCount, 
+                        await _context.Posts.FirstOrDefaultAsync(c => c.Created == lastActive)));
+            }
+            
+            return View(categoryViewModels);
         }
 
         // GET: Category/Details/5
@@ -71,7 +143,8 @@ namespace Forum.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,ParentId")] CategoryModel categoryModel)
-        {  
+        {
+            categoryModel.Created = DateTime.Now;
             if (ModelState.IsValid)
             {
                 if (categoryModel.ParentId == -1)
@@ -100,7 +173,7 @@ namespace Forum.Controllers
             List<SelectListItem> items = new SelectList(_context.Categories.Where(c => c.Id != id), "Id", "Name").ToList();
             items.Insert(0, (new SelectListItem { Text = "Root", Value = "-1" }));
             ViewData["ParentId"] = items;
-            return View(categoryModel);
+            return View(new CategoryViewModel(categoryModel));
         }
 
         // POST: Category/Edit/5
@@ -108,8 +181,9 @@ namespace Forum.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ParentId")] CategoryModel categoryModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Name,ParentId")] CategoryViewModel categoryViewModel)
         {
+            var categoryModel = categoryViewModel.ToModel();
             if (id != categoryModel.Id)
             {
                 return NotFound();
@@ -136,8 +210,10 @@ namespace Forum.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ParentId"] = new SelectList(_context.Categories, "Id", "Name", categoryModel.ParentId);
-            return View(categoryModel);
+            List<SelectListItem> items = new SelectList(_context.Categories.Where(c => c.Id != id), "Id", "Name").ToList();
+            items.Insert(0, (new SelectListItem { Text = "Root", Value = "-1" }));
+            ViewData["ParentId"] = items;            
+            return View(categoryViewModel);
         }
 
         // GET: Category/Delete/5

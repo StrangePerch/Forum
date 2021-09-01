@@ -7,7 +7,7 @@
 
 <a class="badge badge-primary"
    asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@ViewBag.Parent.ParentId">
-    Return to Categories
+    Return to Threads
 </a>
 
 <div class="d-flex flex-column mt-4">
@@ -27,9 +27,23 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-3  border">
-                        @* TODO: Some user info here *@
-                        W.I.P Some user info here
+                    <div class="col-3 border">
+                        <div class="d-flex flex-column">
+                            @if (item.Author != null)
+                            {
+                                <div>@item.Author.UserName</div>
+                                <div>@item.Author.GetHighestRole(ViewBag.UserManager)</div>
+                                <div>Join date: @item.Author.JoinedAt</div>
+                                <div>Location: @item.Author.Location</div>
+                            }
+                            else
+                            {
+                                <div>We lost author</div>
+                                <div>Ghost</div>
+                                <div>Join date: ???</div>
+                                <div>Location: ???</div>
+                            }
+                        </div>
                     </div>
                     <div class="col  border">
                         <div class="input-group my-2">
@@ -60,6 +74,9 @@
         </div>
         <div class="form-group">
             <input type="submit" value="Create" class="btn btn-primary"/>
+        </div>
+        <div class="file-upload-wrapper">
+          <input type="file" id="input-file-now" class="file-upload" />
         </div>
     </form>
 </div>

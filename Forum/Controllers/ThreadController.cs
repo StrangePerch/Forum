@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Forum.Data;
 using Forum.Models;
+using Forum.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
@@ -17,20 +18,15 @@ namespace Forum.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        private UserManager<IdentityUser> UserManager { get; set; }
-        private IdentityUser User { get; set; }
+        private UserManager<ForumUser> UserManager { get; set; }
+        private ForumUser User { get; set; }
 
         public ThreadController(ApplicationDbContext context, 
-            UserManager<IdentityUser> manager,
+            UserManager<ForumUser> manager,
             IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             UserManager = manager;
-            
-            var task = UserManager.FindByIdAsync(httpContextAccessor.HttpContext.User
-                .FindFirst(ClaimTypes.NameIdentifier).Value);
-            Task.WaitAll(task);
-            User = task.Result;
         }
 
         public SelectList GetSelectList(int? selected)
@@ -43,37 +39,28 @@ namespace Forum.Controllers
         public async Task<IActionResult> Browse(int? id)
         {
             var applicationDbContext = 
-                _context.Threads.Include(c => c.Parent)
-                    .Where(c => c.ParentId == id);
+                _context.Threads
+                    .Include(t => t.Parent)
+                    .Include(t => t.Author)
+                    .Include(t => t.Posts)
+                    .Where(t => t.ParentId == id)
+                    .Select(t => new ThreadViewModel().FromModel(t));
             ViewBag.Parent = await _context.Categories.FindAsync(id);
             ViewBag.UserManager = UserManager;
+    
             return View(await applicationDbContext.ToListAsync());
         }
         
         // GET: Thread
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Threads.Include(t => t.Parent);
+            var applicationDbContext = 
+                _context.Threads
+                    .Include(t => t.Parent)
+                    .Include(t => t.Author)
+                    .Include(t => t.Posts)
+                    .Select(t => new ThreadViewModel().FromModel(t));
             return View(await applicationDbContext.ToListAsync());
-        }
-
-        // GET: Thread/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var threadModel = await _context.Threads
-                .Include(t => t.Parent)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (threadModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(threadModel);
         }
 
         // GET: Thread/Create
@@ -92,6 +79,7 @@ namespace Forum.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,AuthorId,ParentId")] ThreadModel threadModel)
         {
+            threadModel.Created = DateTime.Now;
             if (ModelState.IsValid)
             {
                 _context.Add(threadModel);
@@ -110,13 +98,17 @@ namespace Forum.Controllers
                 return NotFound();
             }
 
-            var threadModel = await _context.Threads.FindAsync(id);
+            var threadModel = await _context.Threads
+                .Include(t => t.Parent)
+                .Include(t => t.Author)
+                .Include(t => t.Posts)
+                .FirstOrDefaultAsync((t) => t.Id == id);
             if (threadModel == null)
             {
                 return NotFound();
             }
             ViewData["ParentId"] = GetSelectList(threadModel.ParentId);
-            return View(threadModel);
+            return View(new ThreadViewModel(threadModel));
         }
 
         // POST: Thread/Edit/5
@@ -124,8 +116,14 @@ namespace Forum.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,AuthorId,ParentId")] ThreadModel threadModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ParentId,Closed")] ThreadViewModel threadViewModel)
         {
+            var threadModel = await _context.Threads
+                .Include(t => t.Parent)
+                .Include(t => t.Author)
+                .Include(t => t.Posts)
+                .FirstOrDefaultAsync((t) => t.Id == id);
+            threadViewModel.ToModel(threadModel);
             if (id != threadModel.Id)
             {
                 return NotFound();
@@ -151,38 +149,8 @@ namespace Forum.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ParentId"] = new SelectList(_context.Categories, "Id", "Id", threadModel.ParentId);
-            return View(threadModel);
-        }
-
-        // GET: Thread/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var threadModel = await _context.Threads
-                .Include(t => t.Parent)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (threadModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(threadModel);
-        }
-
-        // POST: Thread/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var threadModel = await _context.Threads.FindAsync(id);
-            _context.Threads.Remove(threadModel);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            ViewData["ParentId"] = GetSelectList(threadModel.ParentId);
+            return View(threadViewModel);
         }
 
         private bool ThreadModelExists(int id)

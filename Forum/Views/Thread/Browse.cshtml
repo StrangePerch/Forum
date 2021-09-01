@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Forum.Models.ThreadModel>
+﻿@model IEnumerable<Forum.Models.ViewModels.ThreadViewModel>
 
 @{
     ViewData["Title"] = "Browse";
@@ -10,53 +10,79 @@
     Return to Categories
 </a>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AuthorId)
-        </th>
-        <th>
-            Threads
-        </th>
-        <th>
-            Posts
-        </th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-
+<div class="d-flex flex-column mt-4">
+    <div class="container">
+        <div class="row">
+            <div class="col border">
+                <div class="nav-link text-dark">
+                    <h4 class="">Name</h4>
+                </div>
+            </div>
+            <div class="col border">
+                <div class="nav-link text-dark">
+                    <h4 class="">Author</h4>
+                </div>
+            </div>
+            <div class="col border">
+                <div class="nav-link text-dark">
+                    <h4 class="">Created</h4>
+                </div>
+            </div>
+            <div class="col border">
+                <div class="nav-link text-dark">
+                    <h4 class="">Last active</h4>
+                </div>
+            </div>
+            <div class="col border">
+                <div class="nav-link text-dark">
+                    <h4 class="">Posts</h4>
+                </div>
+            </div>
+        </div>
+    </div>
     @if (Model.Any())
     {
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    <a class="nav-link text-dark"
-                       asp-area="" asp-controller="Post" asp-action="Browse" asp-route-id="@item.Id">
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </a>
-                </td>
-                <td>
-                    <a class="nav-link text-dark"
-                       asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@item.Id">
-                        @Html.DisplayFor(modelItem => item.AuthorId)
-                    </a>
-                </td>
-            </tr>
+            <div class="container">
+                <div class="row">
+                    <div class="col border">
+                        <a class="nav-link text-dark"
+                           asp-area="" asp-controller="Post" asp-action="Browse" asp-route-id="@item.Id">
+                            @item.Name
+                        </a>
+                    </div>
+                    <div class="col border">
+                        <a class="nav-link text-dark"
+                           asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@item.Id">
+                            @item.AuthorName
+                        </a>
+                    </div>
+                    <div class="col border">
+                        <div class="nav-link text-dark">
+                            @item.Created
+                        </div>
+                    </div>
+                    <div class="col border">
+                        <div class="nav-link text-dark">
+                            @item.LastActive
+                        </div>
+                    </div>    
+                    <div class="col border">
+                        <div class="nav-link text-dark">
+                            @item.PostsCount
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
     }
     else
     {
         <h1>Wow, such empty</h1>
     }
-    <a class="badge badge-info"
+    <a class="badge badge-info mt-4"
        asp-area="" asp-controller="Thread" asp-action="Create" asp-route-id="@ViewBag.Parent.Id">
         Create
     </a>
-    </tbody>
-</table>
+</div>

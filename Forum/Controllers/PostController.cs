@@ -16,26 +16,21 @@ namespace Forum.Controllers
     public class PostController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private UserManager<IdentityUser> UserManager { get; set; }
-        private IdentityUser User { get; set; }
+        private UserManager<ForumUser> UserManager { get; set; }
 
         public PostController(ApplicationDbContext context, 
-            UserManager<IdentityUser> manager,
-            IHttpContextAccessor httpContextAccessor)
+            UserManager<ForumUser> manager)
         {
             _context = context;
             UserManager = manager;
-            
-            var task = UserManager.FindByIdAsync(httpContextAccessor.HttpContext.User
-                .FindFirst(ClaimTypes.NameIdentifier).Value);
-            Task.WaitAll(task);
-            User = task.Result;
         }
 
         public async Task<IActionResult> Browse(int? id)
         {
             var applicationDbContext = 
-                _context.Posts.Include(c => c.Thread)
+                _context.Posts
+                    .Include(p => p.Thread)
+                    .Include(p => p.Author)
                     .Where(p => p.ThreadId == id);
             ViewBag.Parent = await _context.Threads.FindAsync(id);
             ViewBag.UserManager = UserManager;
@@ -45,7 +40,8 @@ namespace Forum.Controllers
         // GET: Post
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Posts.Include(p => p.Thread);
+            var applicationDbContext = 
+                _context.Posts.Include(p => p.Thread);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -69,10 +65,10 @@ namespace Forum.Controllers
         }
 
         // GET: Post/Create
-        public IActionResult Create(int? id)
+        public async Task<IActionResult> Create(int? id)
         {
             ViewData["ThreadId"] = new SelectList(_context.Threads, "Id", "Id");
-            ViewBag.User = User;
+            ViewBag.User = await UserManager.GetUserAsync(User);
             ViewBag.Id = id;
             return View();
         }
@@ -84,7 +80,8 @@ namespace Forum.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Text,AuthorId,ThreadId,AttachmentsPaths")] PostModel postModel)
         {
-            postModel.AuthorId = User.Id;
+            var author = await UserManager.GetUserAsync(User);
+            postModel.AuthorId = author.Id;
             postModel.Created = DateTime.Now;
             
             if (ModelState.IsValid)

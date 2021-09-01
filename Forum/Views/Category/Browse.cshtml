@@ -1,14 +1,12 @@
-﻿@model IEnumerable<Forum.Models.CategoryModel>
+﻿@model IEnumerable<Forum.Models.ViewModels.CategoryViewModel>
 
 @{
     ViewData["Title"] = "Browse";
-    var parent = Model.First().Parent;
-    int? parentId = null;       
-    if (parent != null)
-        parentId = parent.ParentId;
+    var parentId = Model.First().ParentId;
+
 }
 <!DOCTYPE html>
-@if (parent != null)
+@if (parentId != null)
 {
     <a class="badge badge-primary"
        asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@parentId">
@@ -16,36 +14,78 @@
     </a>
 }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                Last post
-            </th>
-            <th>
-                Threads
-            </th>
-            <th>
-                Posts
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a class="nav-link text-dark"
-                   asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@item.Id">
-                    @Html.DisplayFor(modelItem => item.Name)
-                </a>
-            </td>
-            <td>
-            </td>
-        </tr>
+<div class="d-flex flex-column mt-4">
+    <div class="container">
+        <div class="row">
+            <div class="col border">
+                <div class="nav-link text-dark">
+                    <h4 class="">Name</h4>
+                </div>
+            </div>
+            <div class="col border">
+                <div class="nav-link text-dark">
+                    <h4 class="">Description</h4>
+                </div>
+            </div>
+            <div class="col border">
+                <div class="nav-link text-dark">
+                    <h4 class="">LastActive</h4>
+                </div>
+            </div>
+            <div class="col border">
+                <div class="nav-link text-dark">
+                    <h4 class="">Threads</h4>
+                </div>
+            </div>
+            <div class="col border">
+                <div class="nav-link text-dark">
+                    <h4 class="">Posts</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (Model.Any())
+    {
+        @foreach (var item in Model)
+        {
+            <div class="container">
+                <div class="row">
+                    <div class="col border">
+                        <a class="nav-link text-dark"
+                           asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@item.Id">
+                            @item.Name
+                        </a>
+                    </div>
+                    <div class="col border">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@item.Id">
+                            @item.Description
+                        </a>
+                    </div>
+                    <div class="col border">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Post" asp-action="Browse" asp-route-id="@item.LastActiveId">
+                            @item.LastActive
+                        </a>
+                    </div>
+                    <div class="col border">
+                        <div class="nav-link text-dark">
+                            @item.ThreadsCount
+                        </div>
+                    </div>
+                    <div class="col border">
+                        <div class="nav-link text-dark">
+                            @item.PostsCount
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     }
-    </tbody>
-</table>
+    else
+    {
+        <h1>Wow, such empty</h1>
+    }
+    @* <a class="badge badge-info mt-4" *@
+    @*    asp-area="" asp-controller="Category" asp-action="Create" asp-route-id="@parentId"> *@
+    @*     Create *@
+    @* </a> *@
+</div>

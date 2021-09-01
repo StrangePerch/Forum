@@ -22,6 +22,9 @@ namespace Forum.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
@@ -53,6 +56,9 @@ namespace Forum.Data.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("Edited")
+                        .HasColumnType("TEXT");
+
                     b.Property<int?>("QuoteId")
                         .HasColumnType("INTEGER");
 
@@ -80,6 +86,12 @@ namespace Forum.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("AuthorId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Closed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Created")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -158,6 +170,10 @@ namespace Forum.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
@@ -208,6 +224,8 @@ namespace Forum.Data.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -293,6 +311,19 @@ namespace Forum.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Forum.Models.ForumUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("TEXT");
+
+                    b.HasDiscriminator().HasValue("ForumUser");
+                });
+
             modelBuilder.Entity("Forum.Models.CategoryModel", b =>
                 {
                     b.HasOne("Forum.Models.CategoryModel", "Parent")
@@ -304,7 +335,7 @@ namespace Forum.Data.Migrations
 
             modelBuilder.Entity("Forum.Models.PostModel", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Author")
+                    b.HasOne("Forum.Models.ForumUser", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId");
 
@@ -327,7 +358,7 @@ namespace Forum.Data.Migrations
 
             modelBuilder.Entity("Forum.Models.ThreadModel", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Author")
+                    b.HasOne("Forum.Models.ForumUser", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId");
 

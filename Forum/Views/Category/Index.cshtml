@@ -1,41 +1,44 @@
-@model IEnumerable<Forum.Models.CategoryModel>
+@model IEnumerable<Forum.Models.ViewModels.CategoryViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    Layout = "Admin/_AdminLayout";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Parent)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">ParentName</th>
+        <th scope="col">PostsCount</th>
+        <th scope="col">ThreadsCount</th>
+        <th scope="col">Created</th>
+        <th scope="col">LastActive</th>
+        <th scope="col">Action</th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var category in Model)
+    {
         <tr>
+            <th scope="row">@category.Name</th>
+            <td>@category.Description</td>
+            <td>@category.ParentName</td>
+            <td>@category.PostsCount</td>
+            <td>@category.ThreadsCount</td>
+            <td>@category.Created</td>
+            <td>@category.LastActive</td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Parent.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a class="badge bg-warning" asp-action="Edit" asp-route-id="@category.Id">Edit</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+    document.querySelector("#CategoriesLink").className += " active";
+    document.querySelector("#Databases").className += " menu-open";
+    </script>
+}

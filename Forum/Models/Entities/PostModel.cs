@@ -10,8 +10,10 @@ namespace Forum.Models
         public int Id { get; set; }
         public string Text { get; set; }
         public string AuthorId { get; set; }
-        public IdentityUser Author { get; set; }
+        public ForumUser Author { get; set; }
         public DateTime Created { get; set; }
+        
+        public DateTime Edited { get; set; }
         public int ThreadId { get; set; }
         public ThreadModel Thread { get; set; }
         

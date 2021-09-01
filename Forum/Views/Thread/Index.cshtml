@@ -1,47 +1,46 @@
-@model IEnumerable<Forum.Models.ThreadModel>
+@model IEnumerable<Forum.Models.ViewModels.ThreadViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    Layout = "Admin/_AdminLayout";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AuthorId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Parent)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th scope="col">Name</th>
+        <th scope="col">AuthorId</th>
+        <th scope="col">AuthorName</th>
+        <th scope="col">ParentName</th>
+        <th scope="col">PostsCount</th>
+        <th scope="col">Created</th>
+        <th scope="col">LastActive</th>
+        <th scope="col">Closed</th>
+        <th scope="col">Action</th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var thread in Model)
+    {
         <tr>
+            <th scope="row">@thread.Name</th>
+            <td>@thread.AuthorId</td>
+            <td>@thread.AuthorName</td>
+            <td>@thread.ParentName</td>
+            <td>@thread.PostsCount</td>
+            <td>@thread.Created</td>
+            <td>@thread.LastActive</td>
+            <td>@thread.Closed</td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AuthorId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Parent.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a class="badge bg-warning" asp-action="Edit" asp-route-id="@thread.Id">Edit</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+    document.querySelector("#ThreadsLink").className += " active";
+    document.querySelector("#Databases").className += " menu-open";
+    </script>
+}

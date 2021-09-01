@@ -40,6 +40,7 @@
           "Microsoft.EntityFrameworkCore.Sqlite": "5.0.7",
           "Microsoft.EntityFrameworkCore.Tools": "5.0.7",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "5.0.2",
+          "bootstrap": "5.1.0",
           "Microsoft.AspNetCore.Antiforgery": "5.0.0.0",
           "Microsoft.AspNetCore.Authentication.Abstractions": "5.0.0.0",
           "Microsoft.AspNetCore.Authentication.Cookies": "5.0.0.0",
@@ -324,6 +325,7 @@
           "Forum.dll": {}
         }
       },
+      "bootstrap/5.1.0": {},
       "Humanizer.Core/2.8.26": {
         "runtime": {
           "lib/netstandard2.0/Humanizer.dll": {
@@ -3770,6 +3772,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "bootstrap/5.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-X3pFGTRx6qZxkybkit5OGMQDIJHu2uQ1lQSmyqa7iJx8MASsJdfvBUCtzsyiEbSDI7LUuSLitCbaMn2OPFszWg==",
+      "path": "bootstrap/5.1.0",
+      "hashPath": "bootstrap.5.1.0.nupkg.sha512"
     },
     "Humanizer.Core/2.8.26": {
       "type": "package",

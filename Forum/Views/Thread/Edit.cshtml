@@ -1,41 +1,43 @@
-@model Forum.Models.ThreadModel
+@model Forum.Models.ViewModels.ThreadViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    Layout = "Admin/_AdminLayout";
 }
 
-<h1>Edit</h1>
-
-<h4>ThreadModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+<div class="ml-5 mr-5">
+  <form asp-action="Edit">
+    <div class="border border-primary rounded m-0">
+      <div class="bg-primary h3 p-2">
+        Thread Edit
+      </div>
+      <table class="table m-0">
+        <tbody>
+        <tr>
+          <th scope="row">Name</th>
+          <td>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">Parent</th>
+          <td>
+            <select asp-for="ParentId" class="form-control" asp-items="ViewBag.ParentId" SelectionMode="Multiple" ></select>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">Closed</th>
+          <td>
+            <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+              <input asp-for="Closed" type="checkbox" class="btn-check" id="closed" autocomplete="off">
+              <label class="btn btn-outline-danger" for="closed">Closed</label>
             </div>
-            <div class="form-group">
-                <label asp-for="AuthorId" class="control-label"></label>
-                <input asp-for="AuthorId" class="form-control" />
-                <span asp-validation-for="AuthorId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ParentId" class="control-label"></label>
-                <select asp-for="ParentId" class="form-control" asp-items="ViewBag.ParentId"></select>
-                <span asp-validation-for="ParentId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <input type="submit" value="Save" class="btn btn-primary mt-2 w-100" />
     </div>
+  </form>
+  <a class="badge badge-primary mt-2" asp-action="Index">Back to List</a>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-

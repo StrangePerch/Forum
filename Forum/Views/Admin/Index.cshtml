@@ -1,0 +1,56 @@
+﻿@{
+    Layout = "Admin/_AdminLayout";
+}
+
+<div class="d-flex flex-row bd-highlight mb-3">
+    <div class="info-box">
+        <!-- Apply any bg-* class to to the icon to color it -->
+        <span class="info-box-icon bg-red"><i class="fa fa-envelope-o"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Posts</span>
+            <span class="info-box-number">@ViewBag.Posts</span>
+        </div>
+        <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  
+    <div class="info-box">
+        <!-- Apply any bg-* class to to the icon to color it -->
+        <span class="info-box-icon bg-yellow"><i class="fas fa-code-branch"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Threads</span>
+            <span class="info-box-number">@ViewBag.Threads</span>
+        </div>
+        <!-- /.info-box-content -->
+    </div>
+  
+    <!-- /.info-box -->
+    <div class="info-box">
+        <!-- Apply any bg-* class to to the icon to color it -->
+        <span class="info-box-icon bg-green"><i class="fas fa-users"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Users</span>
+            <span class="info-box-number">@ViewBag.Users</span>
+        </div>
+        <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  
+    <!-- /.info-box -->
+    <div class="info-box">
+        <!-- Apply any bg-* class to to the icon to color it -->
+        <span class="info-box-icon bg-blue"><i class="fas fa-sitemap"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Categories</span>
+            <span class="info-box-number">@ViewBag.Categories</span>
+        </div>
+        <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+</div>
+
+@section Scripts {
+    <script>
+    document.querySelector("#HomeLink").className += " active";
+    </script>
+}

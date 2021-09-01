@@ -1,0 +1,50 @@
+@model Forum.Models.ViewModels.UserViewModel
+
+@{
+    Layout = "Admin/_AdminLayout";
+}
+
+<div class="ml-5 mr-5">
+  <div class="border border-primary rounded m-0">
+    <div class="bg-primary h3 p-2  m-0">
+      User Details
+    </div>
+    <table class="table m-0">
+      <tbody>
+      <tr>
+        <th scope="row">Username</th>
+        <td>@Model.UserName</td>
+      </tr>
+      <tr>
+        <th scope="row">Email</th>
+        <td>@Model.Email</td>
+      </tr>
+      <tr>
+        <th scope="row">Roles</th>
+        <td>
+          @foreach (var role in Model.Roles)
+          {
+              <span class="badge bg-primary">@role</span>
+          }
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Location</th>
+        <td>@Model.Location</td>
+      </tr>
+      <tr>
+        <th scope="row">JoinedAt</th>
+        <td>@Model.JoinedAt</td>
+      </tr>
+      <tr>
+        <th scope="row">Posts</th>
+        <td>@Model.Posts</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div>
+      <a class="badge badge-warning mt-2" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+      <a class="badge badge-primary mt-2" asp-action="Index">Back to List</a>
+  </div>
+</div>

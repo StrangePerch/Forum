@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "NzyfetPD1VQwl8MWB3d9W2kZN3yzxBngd9sYsxqLPB9nUif4VnePD2MWr4GRV0vz5mi/gsSyI9A8teBqRt+v5A==",
+  "dgSpecHash": "KQENld3S6/FIRThRODd2cFG9NBqRuaSPZPAIB1hjjstCAioO/92WCP2GDnWO+SOTdfu+zR5vuRj3e6tvZuXoZA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Admin\\RiderProjects\\ASP.NET\\Forum\\Forum\\Forum.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Admin\\.nuget\\packages\\bootstrap\\5.1.0\\bootstrap.5.1.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.7\\microsoft.aspnetcore.cryptography.internal.5.0.7.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\5.0.7\\microsoft.aspnetcore.cryptography.keyderivation.5.0.7.nupkg.sha512",
