@@ -32,9 +32,9 @@
             <td>@user.JoinedAt</td>
             <td>@user.Posts</td>
             <td>
-                <a  class="badge bg-warning" asp-action="Edit" asp-route-id="@user.Id">Edit</a> |
-                <a class="badge bg-primary" asp-action="Details" asp-route-id="@user.Id">Details</a>
-                @* <a asp-action="Delete" asp-route-id="@user.Id">Delete</a> *@
+                <a class="badge bg-warning" asp-action="Edit" asp-route-id="@user.Id">Edit</a> |
+                <a class="badge bg-primary" asp-action="Details" asp-route-id="@user.Id">Details</a> |
+                <a class="badge bg-danger" asp-action="Ban" asp-route-id="@user.Id">Ban</a>
             </td>
         </tr>
     }

@@ -245,3 +245,5 @@ C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\Sh
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\User\Index.cshtml.g.cs
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\User\Details.cshtml.g.cs
 C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\User\Edit.cshtml.g.cs
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Views\User\Ban.cshtml.g.cs
+C:\Users\Admin\RiderProjects\ASP.NET\Forum\Forum\obj\Debug\net5.0\Razor\Areas\Identity\Pages\_Layout.cshtml.g.cs

@@ -1,38 +1,38 @@
-@model Forum.Models.PostModel
-
-@{
-    ViewData["Title"] = "Details";
-}
-
-<h1>Details</h1>
-
-<div>
-    <h4>PostModel</h4>
-    <hr/>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Text)
-        </dt>
-        <dd class="col-sm-10">
-            <textarea class="span6"  rows="3" placeholder="Write text here...">
-            @Model.Text
-            </textarea>
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Thread)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Thread.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.AttachmentsPaths)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.AttachmentsPaths)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+@* @model Forum.Models.PostModel *@
+@* *@
+@* @{ *@
+@*     ViewData["Title"] = "Details"; *@
+@* } *@
+@* *@
+@* <h1>Details</h1> *@
+@* *@
+@* <div> *@
+@*     <h4>PostModel</h4> *@
+@*     <hr/> *@
+@*     <dl class="row"> *@
+@*         <dt class="col-sm-2"> *@
+@*             @Html.DisplayNameFor(model => model.Text) *@
+@*         </dt> *@
+@*         <dd class="col-sm-10"> *@
+@*             <textarea class="span6"  rows="3" placeholder="Write text here..."> *@
+@*             @Model.Text *@
+@*             </textarea> *@
+@*         </dd> *@
+@*         <dt class="col-sm-2"> *@
+@*             @Html.DisplayNameFor(model => model.Thread) *@
+@*         </dt> *@
+@*         <dd class="col-sm-10"> *@
+@*             @Html.DisplayFor(model => model.Thread.Id) *@
+@*         </dd> *@
+@*         <dt class="col-sm-2"> *@
+@*             @Html.DisplayNameFor(model => model.AttachmentsPaths) *@
+@*         </dt> *@
+@*         <dd class="col-sm-10"> *@
+@*             @Html.DisplayFor(model => model.AttachmentsPaths) *@
+@*         </dd> *@
+@*     </dl> *@
+@* </div> *@
+@* <div> *@
+@*     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> | *@
+@*     <a asp-action="Index">Back to List</a> *@
+@* </div> *@

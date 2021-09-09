@@ -46,10 +46,13 @@ namespace Forum.Models.ViewModels
             {
                 ParentName = "Root";
             }
-            
-            PostsCount = model.Posts.Count;
+
+            if (model.Posts.Any())
+            {
+                PostsCount = model.Posts.Count;
+                LastActive = model.Posts.Max(p => p.Created);
+            }
             Created = model.Created;
-            LastActive = model.Posts.Max(p => p.Created);
             Closed = model.Closed;
             return this;
         }

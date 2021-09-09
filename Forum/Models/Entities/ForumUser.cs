@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 
-namespace Forum.Models
+namespace Forum.Models.Entities
 {
     public class ForumUser : IdentityUser
     {
+        public string Avatar { get; set; }
         public string Location { get; set; }
         public DateTime JoinedAt { get; set; }
 
@@ -21,6 +22,8 @@ namespace Forum.Models
         public string GetHighestRole(List<string> roles)
         {
             if(roles == null) throw new Exception("User without roles: " + Email);
+            if (roles.Contains("Banned"))
+                return "Banned";
             if (roles.Contains("Admin"))
                 return "Administrator";
             if (roles.Contains("Senior"))

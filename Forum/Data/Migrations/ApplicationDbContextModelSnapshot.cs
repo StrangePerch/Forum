@@ -311,9 +311,12 @@ namespace Forum.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Forum.Models.ForumUser", b =>
+            modelBuilder.Entity("Forum.Models.Entities.ForumUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("JoinedAt")
                         .HasColumnType("TEXT");
@@ -335,7 +338,7 @@ namespace Forum.Data.Migrations
 
             modelBuilder.Entity("Forum.Models.PostModel", b =>
                 {
-                    b.HasOne("Forum.Models.ForumUser", "Author")
+                    b.HasOne("Forum.Models.Entities.ForumUser", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId");
 
@@ -358,7 +361,7 @@ namespace Forum.Data.Migrations
 
             modelBuilder.Entity("Forum.Models.ThreadModel", b =>
                 {
-                    b.HasOne("Forum.Models.ForumUser", "Author")
+                    b.HasOne("Forum.Models.Entities.ForumUser", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId");
 

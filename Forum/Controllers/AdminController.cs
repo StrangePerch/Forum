@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Forum.Data;
@@ -23,6 +24,16 @@ namespace Forum.Controllers
             ViewBag.Threads = _context.Threads.Count();
             ViewBag.Users = _context.Users.Count();
             ViewBag.Categories = _context.Categories.Count();
+            var files = Directory.GetFiles("wwwroot/Files");
+            
+            ViewBag.Files = files.Length;
+            long size = 0;
+            foreach (var file in files)
+            {
+                var fileInfo = new FileInfo(file);
+                size += fileInfo.Length;
+            }
+            ViewBag.Size = size / 1024;
 
             return View();
         }

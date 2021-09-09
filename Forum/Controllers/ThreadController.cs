@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Forum.Data;
 using Forum.Models;
+using Forum.Models.Entities;
 using Forum.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
@@ -36,7 +38,7 @@ namespace Forum.Controllers
             return new SelectList(select, "Id", "Name", selected);
         }
 
-        public async Task<IActionResult> Browse(int? id)
+        public async Task<IActionResult> Browse(int id)
         {
             var applicationDbContext = 
                 _context.Threads
@@ -52,6 +54,7 @@ namespace Forum.Controllers
         }
         
         // GET: Thread
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = 
@@ -63,7 +66,7 @@ namespace Forum.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Thread/Create
+        [Authorize(Roles = "Admin,Senior")]
         public IActionResult Create(int? id)
         {
             ViewData["ParentId"] = GetSelectList(id);
@@ -75,6 +78,7 @@ namespace Forum.Controllers
         // POST: Thread/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,Senior")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,AuthorId,ParentId")] ThreadModel threadModel)
@@ -84,13 +88,14 @@ namespace Forum.Controllers
             {
                 _context.Add(threadModel);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Browse),new { id = threadModel.ParentId });
             }
             ViewData["ParentId"] = new SelectList(_context.Categories, "Id", "Id", threadModel.ParentId);
             return View(threadModel);
         }
 
         // GET: Thread/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -114,6 +119,7 @@ namespace Forum.Controllers
         // POST: Thread/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ParentId,Closed")] ThreadViewModel threadViewModel)

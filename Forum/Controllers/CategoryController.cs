@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Forum.Data;
 using Forum.Models;
 using Forum.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Forum.Controllers
 {
@@ -19,14 +20,14 @@ namespace Forum.Controllers
         {
             _context = context;
         }
-        
+
         public async Task<IActionResult> Browse(int? id)
         {
-            var applicationDbContext = 
+            var applicationDbContext =
                 _context.Categories.Include(c => c.Parent)
                     .Where(c => c.ParentId == id);
             if (!applicationDbContext.Any())
-                return RedirectToAction("Browse", "Thread", new { id });
+                return RedirectToAction("Browse", "Thread", new {id});
 
             var categoryViewModels = new List<CategoryViewModel>();
             foreach (var category in applicationDbContext)
@@ -41,7 +42,7 @@ namespace Forum.Controllers
                     if (IsThreadChild(thread, category))
                     {
                         threadCount++;
-                        if (thread.Posts != null)
+                        if (thread.Posts.Any())
                         {
                             postsCount += thread.Posts.Count;
                             var last = thread.Posts.Max(p => p.Created);
@@ -49,12 +50,12 @@ namespace Forum.Controllers
                         }
                     }
                 }
-                
+
                 categoryViewModels.Add(new CategoryViewModel()
-                    .FromModel(category, postsCount, threadCount, 
+                    .FromModel(category, postsCount, threadCount,
                         await _context.Posts.FirstOrDefaultAsync(c => c.Created == lastActive)));
             }
-            
+
             return View(categoryViewModels);
         }
 
@@ -63,7 +64,7 @@ namespace Forum.Controllers
             return IsCategoryChild(thread.Parent, category);
         }
 
-        public bool IsCategoryChild(CategoryModel childCategory, CategoryModel parentCategory)
+        private static bool IsCategoryChild(CategoryModel childCategory, CategoryModel parentCategory)
         {
             while (true)
             {
@@ -73,6 +74,7 @@ namespace Forum.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Category
         public async Task<IActionResult> Index()
         {
@@ -92,7 +94,7 @@ namespace Forum.Controllers
                     if (IsThreadChild(thread, category))
                     {
                         threadCount++;
-                        if (thread.Posts != null)
+                        if (thread.Posts.Any())
                         {
                             postsCount += thread.Posts.Count;
                             var last = thread.Posts.Max(p => p.Created);
@@ -100,16 +102,17 @@ namespace Forum.Controllers
                         }
                     }
                 }
-                
+
                 categoryViewModels.Add(new CategoryViewModel()
-                    .FromModel(category, postsCount, threadCount, 
+                    .FromModel(category, postsCount, threadCount,
                         await _context.Posts.FirstOrDefaultAsync(c => c.Created == lastActive)));
             }
-            
+
             return View(categoryViewModels);
         }
 
         // GET: Category/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -129,10 +132,11 @@ namespace Forum.Controllers
         }
 
         // GET: Category/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             List<SelectListItem> items = new SelectList(_context.Categories, "Id", "Name").ToList();
-            items.Insert(0, (new SelectListItem { Text = "Root", Value = "-1" }));
+            items.Insert(0, (new SelectListItem {Text = "Root", Value = "-1"}));
             ViewData["ParentId"] = items;
             return View();
         }
@@ -140,6 +144,7 @@ namespace Forum.Controllers
         // POST: Category/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,ParentId")] CategoryModel categoryModel)
@@ -153,6 +158,7 @@ namespace Forum.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["ParentId"] = new SelectList(_context.Categories, "Id", "Name", categoryModel.ParentId);
             return View(categoryModel);
         }
@@ -170,8 +176,16 @@ namespace Forum.Controllers
             {
                 return NotFound();
             }
-            List<SelectListItem> items = new SelectList(_context.Categories.Where(c => c.Id != id), "Id", "Name").ToList();
-            items.Insert(0, (new SelectListItem { Text = "Root", Value = "-1" }));
+
+            List<CategoryModel> collection = new();
+            foreach (var category in _context.Categories.Include(c => c.Parent))
+            {
+                if(!IsCategoryChild(category, categoryModel))
+                    collection.Add(category);
+            }
+            List<SelectListItem> items = new SelectList(collection,
+                    "Id", "Name").ToList();
+            items.Insert(0, (new SelectListItem {Text = "Root", Value = "-1"}));
             ViewData["ParentId"] = items;
             return View(new CategoryViewModel(categoryModel));
         }
@@ -179,15 +193,18 @@ namespace Forum.Controllers
         // POST: Category/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Name,ParentId")] CategoryViewModel categoryViewModel)
+        public async Task<IActionResult> Edit(int id,
+            [Bind("Id,Description,Name,ParentId")] CategoryViewModel categoryViewModel)
         {
             var categoryModel = categoryViewModel.ToModel();
             if (id != categoryModel.Id)
             {
                 return NotFound();
             }
+
             if (ModelState.IsValid)
             {
                 if (categoryModel.ParentId == -1)
@@ -208,14 +225,24 @@ namespace Forum.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            List<SelectListItem> items = new SelectList(_context.Categories.Where(c => c.Id != id), "Id", "Name").ToList();
-            items.Insert(0, (new SelectListItem { Text = "Root", Value = "-1" }));
-            ViewData["ParentId"] = items;            
+
+            List<CategoryModel> collection = new();
+            foreach (var category in _context.Categories.Include(c => c.Parent))
+            {
+                if(!IsCategoryChild(category, categoryModel))
+                    collection.Add(category);
+            }
+            List<SelectListItem> items = new SelectList(collection,
+                "Id", "Name").ToList();
+            items.Insert(0, (new SelectListItem {Text = "Root", Value = "-1"}));
+            ViewData["ParentId"] = items;
             return View(categoryViewModel);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Category/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -224,22 +251,65 @@ namespace Forum.Controllers
                 return NotFound();
             }
 
+            var applicationDbContext =
+                _context.Categories.Include(c => c.Parent)
+                    .Where(c => c.ParentId == id);
+
             var categoryModel = await _context.Categories
                 .Include(c => c.Parent)
                 .FirstOrDefaultAsync(m => m.Id == id);
+            List<SelectListItem> items;
+            if (applicationDbContext.Any())
+            {
+                List<CategoryModel> collection = new();
+                foreach (var category in _context.Categories.Include(c => c.Parent))
+                {
+                    if(!IsCategoryChild(category, categoryModel))
+                        collection.Add(category);
+                }
+                items = new SelectList(collection,
+                    "Id", "Name").ToList();
+                items.Insert(0, (new SelectListItem {Text = "Root", Value = "-1"}));
+            }
+            else if(_context.Threads.Any(t => t.ParentId == (int)id))
+            {
+                var parentsIds = _context.Categories.Select(c => c.ParentId);
+                var select = _context.Categories
+                    .Where(c => !parentsIds.Contains(c.Id))
+                    .Where(c => c.Id != id);
+                items = new SelectList(select, "Id", "Name").ToList();
+            }
+            else
+            {
+                items = null;
+            }
+
+            ViewData["ParentId"] = items;
+            
             if (categoryModel == null)
             {
                 return NotFound();
             }
 
-            return View(categoryModel);
+            return View(new CategoryViewModel(categoryModel));
         }
 
         // POST: Category/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int ParentId)
         {
+            foreach (var thread in _context.Threads.Where(t => t.ParentId == id))
+            {
+                thread.ParentId = ParentId;
+                _context.Update(thread);
+            }
+            foreach (var category in _context.Categories.Where(c => c.ParentId == id))
+            {
+                category.ParentId = ParentId == -1 ? null : ParentId;
+                _context.Update(category);
+            }
             var categoryModel = await _context.Categories.FindAsync(id);
             _context.Categories.Remove(categoryModel);
             await _context.SaveChangesAsync();

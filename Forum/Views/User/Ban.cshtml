@@ -1,0 +1,82 @@
+﻿@model Forum.Models.ViewModels.UserViewModel
+
+@{
+    Layout = "Admin/_AdminLayout";
+}
+
+<div class="ml-5 mr-5">
+  <div class="border border-danger rounded m-0">
+    <div class="bg-danger h3 p-2  m-0">
+      Ban
+    </div>
+    <table class="table m-0">
+      <tbody>
+      <tr>
+        <th scope="row">Username</th>
+        <td>@Model.UserName</td>
+      </tr>
+      <tr>
+        <th scope="row">Email</th>
+        <td>@Model.Email</td>
+      </tr>
+      <tr>
+        <th scope="row">Roles</th>
+        <td>
+          @foreach (var role in Model.Roles)
+          {
+            <span class="badge bg-primary">@role</span>
+          }
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Location</th>
+        <td>@Model.Location</td>
+      </tr>
+      <tr>
+        <th scope="row">JoinedAt</th>
+        <td>@Model.JoinedAt</td>
+      </tr>
+      <tr>
+        <th scope="row">Posts</th>
+        <td>@Model.Posts</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <form asp-action="Ban" enctype="multipart/form-data">
+          <div class="container mt-4 border">
+            <div class="input-group my-2">
+              <span class="input-group-text">Reason</span>
+              <textarea id="Text" name="Text" class="form-control" aria-label="Text"></textarea>
+            </div>
+          </div>
+          <div class="container mt-4 border">
+            <div class="input-group my-2">
+              <span class="input-group-text">Untill</span>
+              <input id="datetime" type="datetime-local" min="2017-06-01T08:30">
+            </div>
+          </div>
+          <div class="form-group">
+              <input type="submit" value="Create" class="btn btn-primary"/>
+          </div>
+      </form>
+  <div>
+      <a class="badge badge-primary mt-2" asp-action="Index">Back to List</a>
+  </div>
+</div>
+
+<script>
+  let today = new Date();
+  let dd = today.getDate();
+  let mm = today.getMonth()+1; //January is 0!
+  let yyyy = today.getFullYear();
+   if(dd<10){
+          dd='0'+dd
+      } 
+      if(mm<10){
+          mm='0'+mm
+      } 
+  
+  today = yyyy+'-'+mm+'-'+dd;
+  document.getElementById("datetime").setAttribute("min", today);
+</script>

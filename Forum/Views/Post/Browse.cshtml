@@ -1,11 +1,23 @@
-﻿@model IEnumerable<Forum.Models.PostModel>
+﻿@model IEnumerable<PostModel>
 
 @{
     ViewData["Title"] = "Browse";
 }
+
+@section Styles
+{
+    <style>
+        img {
+        max-height: 50px;
+        max-width: 50px;
+        }
+        
+    </style>
+}
+
 <!DOCTYPE html>
 
-<a class="badge badge-primary"
+<a class="badge bg-primary"
    asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@ViewBag.Parent.ParentId">
     Return to Threads
 </a>
@@ -13,7 +25,7 @@
 <div class="d-flex flex-column mt-4">
     @if (Model.Any())
     {
-        int counter = 0;
+        int counter = ViewBag.CurrentPage * ViewBag.PageSize;
         @foreach (var item in Model)
         {
             counter++;
@@ -23,7 +35,18 @@
                         @item.Created
                     </div>
                     <div class="col text-right border">
-                        #@counter
+                        <div class="d-flex justify-content-between">
+                            <div>#@counter</div>
+                            @if (!User.IsInRole("Banned")
+                                 && (User.IsInRole("Novice") || User.IsInRole("Basic")
+                                 || User.IsInRole("Senior") || User.IsInRole("Admin")))
+                            {
+                                <button class="btn btn-primary py-1 px-2"
+                                        onclick="Quote(@item.Id, '@item.Text', '@item.Author.UserName')">
+                                    <i class="fas fa-reply mt-1"></i>
+                                </button>
+                            }
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -31,7 +54,15 @@
                         <div class="d-flex flex-column">
                             @if (item.Author != null)
                             {
+                                @if (item.Author == item.Thread.Author)
+                                {
+                                    <div>OP</div>
+                                }
                                 <div>@item.Author.UserName</div>
+                                @if (item.Author.Avatar != null)
+                                {
+                                    <img src="@item.Author.Avatar" alt="Avatar"/>
+                                }
                                 <div>@item.Author.GetHighestRole(ViewBag.UserManager)</div>
                                 <div>Join date: @item.Author.JoinedAt</div>
                                 <div>Location: @item.Author.Location</div>
@@ -45,38 +76,144 @@
                             }
                         </div>
                     </div>
-                    <div class="col  border">
-                        <div class="input-group my-2">
-                            <textarea class="form-control" readonly>@item.Text</textarea>
+                    <div class="col border">
+                        <div class="my-2">
+                            @if (item.QuoteId != null)
+                            {
+                            <div class="input-group my-2">
+                                <div>
+                                    <span class="input-group-text">Quote:</span>
+                                    <span class="input-group-text">OP by @item.Quote.Author.UserName</span>
+                                </div>
+                                <textarea class="form-control" aria-label="Text" readonly>@item.Quote.Text</textarea>
+                            </div>
+                            }
+                            <textarea class="form-control bg-transparent" readonly>@item.Text</textarea>
                         </div>
+                        @if (item.AttachmentsPaths != null)
+                        {
+                            <div class="input-group my-2 d-flex flex-row">
+                                @foreach (var file in item.AttachmentsPaths.Split(";"))
+                                {
+                                    if (file == "") continue;
+                                    var path = "/files/" + file;
+                                    <a target="_blank" rel="noopener noreferrer" class="m-1" href="@path">
+                                        @switch (file.Split(".")[1])
+                                        {
+                                            case "docx":
+                                                <i class="fas fa-file-word fa-3x"></i>
+                                                break;
+                                            case "mp4":
+                                                <i class="fas fa-file-video fa-3x"></i>
+                                                break;
+                                            case "pptx":
+                                                <i class="fas fa-file-powerpoint fa-3x"></i>
+                                                break;
+                                            case "rar" or "zip":
+                                                <i class="far fa-file-archive fa-3x"></i>
+                                                break;
+                                            case "exe":
+                                                <i class="far fa-file-alt fa-3x"></i>
+                                                break;
+                                            case "cpp" or "html" or "cs" or "cshtml" or "css" or "js":
+                                                <i class="far fa-file-alt fa-3x"></i>
+                                                break;
+                                            case "png" or "jpg" or "gif" or "jpeg":
+                                                <img src=@path alt="Image"/>
+                                                break;
+                                            default:
+                                                <i class="far fa-file fa-3x"></i>
+                                                break;
+                                        }
+                                    </a>
+                                }
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
         }
+        <div class="d-flex flex-row justify-content-center">
+            @if (ViewBag.CurrentPage > 0)
+            {
+                <a class="badge rounded-pill bg-primary nav-link"
+                   asp-action="Browse"
+                   asp-route-id="@Model.First().ThreadId"
+                   asp-route-page="0">First</a>
+                <a class="badge rounded-pill bg-primary nav-link"
+                   asp-action="Browse"
+                   asp-route-id="@Model.First().ThreadId"
+                   asp-route-page="@(ViewBag.CurrentPage - 1)">Prev</a>
+            }
+            @if (ViewBag.CurrentPage < ViewBag.MaxPage)
+            {
+                <a class="badge rounded-pill bg-primary nav-link"
+                   asp-action="Browse"
+                   asp-route-id="@Model.First().ThreadId"
+                   asp-route-page="@(ViewBag.CurrentPage + 1)">Next</a>
+                <a class="badge rounded-pill bg-primary nav-link"
+                   asp-action="Browse"
+                   asp-route-id="@Model.First().ThreadId"
+                   asp-route-page="@ViewBag.MaxPage">Last</a>
+            }
+        </div>   
     }
     else
     {
         <h1>Wow, such empty</h1>
     }
-    <form asp-action="Create">
-        <div class="container mt-4 border">
-            <div class="row">
-                <div class="col">
-                    <div class="input-group my-2">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Text</span>
+    @{
+        bool closed = false;
+        if(Model.Any())
+            closed = Model.First().Thread.Closed;
+    }
+    @if (!closed && !User.IsInRole("Banned")
+         && (User.IsInRole("Novice") || User.IsInRole("Basic")
+         || User.IsInRole("Senior") || User.IsInRole("Admin")))
+    {
+        <form asp-action="Create" enctype="multipart/form-data">
+                <div class="container mt-4 border">
+                    <input id="QuoteId" name="QuoteId" hidden/>
+                    <div id="QuoteContainer" class="input-group my-2" hidden>
+                        <div>
+                            <span class="input-group-text">Quote:</span>
+                            <span id="QuoteOP" class="input-group-text">OP by</span>
                         </div>
-                        <textarea name="Text" class="form-control" aria-label="Text"></textarea>
+                        <textarea id="Quote" class="form-control" aria-label="Text" readonly></textarea>
+                        <button class="btn btn-primary py-1 px-2" type="button"
+                                onclick="CloseQuote()">
+                            <i class="far fa-times-circle"></i>
+                        </button>
                     </div>
+                    <div class="input-group my-2">
+                        <span class="input-group-text">Text</span>
+                        <textarea id="Text" name="Text" class="form-control" aria-label="Text"></textarea>
+                    </div>
+                    <input id="ThreadId" name="ThreadId" class="form-control" value="@ViewBag.Parent.ParentId" hidden/>
+                    @if (User.IsInRole("Basic") || User.IsInRole("Senior") || User.IsInRole("Admin"))
+                    {
+                        <div class="mb-3">
+                            <input class="form-control" type="file" id="formFileMultiple" name="files" multiple>
+                        </div>
+                    }
                 </div>
-            </div>
-            <input name="ThreadId" class="form-control" value="@ViewBag.Parent.ParentId" hidden/>
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary"/>
-        </div>
-        <div class="file-upload-wrapper">
-          <input type="file" id="input-file-now" class="file-upload" />
-        </div>
-    </form>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary"/>
+                </div>
+            </form>
+    }
 </div>
+
+<script>
+function Quote(id, text, author) {
+    document.getElementById("Quote").value = text;
+    document.getElementById("QuoteContainer").hidden = false;
+    document.getElementById("QuoteId").value = id;
+    document.getElementById("QuoteOP").innerText = "OP: " + author;
+}
+function CloseQuote() {
+    document.getElementById("Quote").value = "";
+    document.getElementById("QuoteContainer").hidden = true;
+    document.getElementById("QuoteId").value = null;
+}
+</script>

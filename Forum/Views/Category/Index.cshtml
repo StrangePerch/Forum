@@ -4,6 +4,8 @@
     Layout = "Admin/_AdminLayout";
 }
 
+<a class="badge badge-primary my-2" asp-action="Create">Create</a>
+
 <table class="table">
     <thead>
     <tr>
@@ -29,7 +31,8 @@
             <td>@category.Created</td>
             <td>@category.LastActive</td>
             <td>
-                <a class="badge bg-warning" asp-action="Edit" asp-route-id="@category.Id">Edit</a>
+                <a class="badge bg-warning" asp-action="Edit" asp-route-id="@category.Id">Edit</a> | 
+                <a class="badge bg-danger" asp-action="Delete" asp-route-id="@category.Id">Delete</a>
             </td>
         </tr>
     }

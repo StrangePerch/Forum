@@ -47,6 +47,20 @@
         <!-- /.info-box-content -->
     </div>
     <!-- /.info-box -->
+    
+    <!-- Apply any bg-* class to to the info-box to color it -->
+    <div class="info-box">
+      <span class="info-box-icon bg-red"><i class="far fa-file"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Files</span>
+        <span class="info-box-number">@ViewBag.Files</span>
+          <span class="progress-description">
+          @(ViewBag.Size)kb
+          </span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
 </div>
 
 @section Scripts {

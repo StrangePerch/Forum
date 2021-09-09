@@ -5,7 +5,7 @@
 }
 <!DOCTYPE html>
 
-<a class="badge badge-primary"
+<a class="badge bg-primary"
    asp-area="" asp-controller="Category" asp-action="Browse" asp-route-id="@ViewBag.Parent.ParentId">
     Return to Categories
 </a>
@@ -81,8 +81,11 @@
     {
         <h1>Wow, such empty</h1>
     }
-    <a class="badge badge-info mt-4"
-       asp-area="" asp-controller="Thread" asp-action="Create" asp-route-id="@ViewBag.Parent.Id">
-        Create
-    </a>
+    @if (User.IsInRole("Senior") || User.IsInRole("Admin"))
+    {
+        <a class="badge bg-info mt-4"
+           asp-area="" asp-controller="Thread" asp-action="Create" asp-route-id="@ViewBag.Parent.Id">
+            Create
+        </a>
+    }
 </div>

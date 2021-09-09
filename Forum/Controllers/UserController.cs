@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Forum.Data;
 using Forum.Models;
+using Forum.Models.Entities;
 using Forum.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -22,7 +23,6 @@ namespace Forum.Controllers
         {
             _userManager = manager;
             _context = context;
-
         }
 
         public async Task<IActionResult> Index()
@@ -38,7 +38,7 @@ namespace Forum.Controllers
             return View(userViewModels);
         }
         
-        // GET: Category/Details/e7f99321-9f1c-4672-9301-221a64f3dc42
+        // GET: User/Details/e7f99321-9f1c-4672-9301-221a64f3dc42
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -59,7 +59,7 @@ namespace Forum.Controllers
             return View(new UserViewModel(userModel, roles.ToList(), posts));
         }
 
-        // GET: Category/Edit/5
+        // GET: User/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -81,8 +81,40 @@ namespace Forum.Controllers
             
             return View(new UserViewModel(userModel, roles.ToList(), posts));
         }
+
+        // GET: User/Ban/5
+        public async Task<IActionResult> Ban(string id)
+        {
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(u => u.Id == id);
+            var roles = await _userManager.GetRolesAsync(user);
+            var posts = _context.Posts.Count(p => p.Author == user);
+            return View(new UserViewModel(user, roles.ToList(), posts));
+        }
         
-        // POST: Category/Edit/5
+        // POST: User/Ban/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Ban(string id, DateTime until)
+        {
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(u => u.Id == id);
+            await _userManager.AddToRoleAsync(user, "Banned");
+            return RedirectToAction("Index");
+        }
+        
+        
+        // // POST: User/Ban/5
+        // [HttpPost]
+        // public async Task<IActionResult> UnBan(string id)
+        // {
+        //     var user = await _userManager.Users
+        //         .FirstOrDefaultAsync(u => u.Id == id);
+        //     await _userManager.RemoveFromRoleAsync(user, "Banned");
+        //     return View();
+        // }
+
+        // POST: User/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -126,37 +158,7 @@ namespace Forum.Controllers
             ViewBag.Roles = new SelectList(_context.Roles, "Name", "Name", _userManager.GetRolesAsync(userModel));
             return View(userViewModel);
         }
-        //
-        // // GET: Category/Delete/5
-        // public async Task<IActionResult> Delete(int? id)
-        // {
-        //     if (id == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     var categoryModel = await _context.Categories
-        //         .Include(c => c.Parent)
-        //         .FirstOrDefaultAsync(m => m.Id == id);
-        //     if (categoryModel == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     return View(categoryModel);
-        // }
-        //
-        // // POST: Category/Delete/5
-        // [HttpPost, ActionName("Delete")]
-        // [ValidateAntiForgeryToken]
-        // public async Task<IActionResult> DeleteConfirmed(int id)
-        // {
-        //     var categoryModel = await _context.Categories.FindAsync(id);
-        //     _context.Categories.Remove(categoryModel);
-        //     await _context.SaveChangesAsync();
-        //     return RedirectToAction(nameof(Index));
-        // }
-        
+
         private bool UserModelExists(string id)
         {
             return _context.Users.Any(e => e.Id == id);
