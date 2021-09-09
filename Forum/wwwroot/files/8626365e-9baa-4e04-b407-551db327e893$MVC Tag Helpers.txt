@@ -1,0 +1,4 @@
+м: Добавить OpenGraph Tag Helper для страницы Автора и свойство на странице книги для ччылок на авторов
+Добавить OpenGraph Website Tag Helper на Home/Index
+100%: Добавить Twitter Card теги на все те же страницы
+М: Прочитать https://github.com/Dotnet-Boxed/Framework#subresource-integrity-sri и добавить asp-subresource-integrity-src, где основные ссылки ведут на CDN
